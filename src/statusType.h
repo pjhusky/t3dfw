@@ -1,6 +1,10 @@
 #ifndef _STATUS_TYPE_H_92b260f3_1af7_4f4f_86e7_3fbba5a67224
 #define _STATUS_TYPE_H_92b260f3_1af7_4f4f_86e7_3fbba5a67224
 
+#include "gfxAPI/eRetVal_GfxAPI.h"
+#include "fileLoaders/eRetVal_FileLoader.h"
+#include "arcBall/eRetVal_ArcBall.h"
+
 #include <string>
 
 struct Status_t {
@@ -21,6 +25,22 @@ struct Status_t {
         : status( status )
         , msg( msg ) {}
 
+    template<typename val_T>
+    Status_t( const val_T& otherVal ) {
+        switch (otherVal) {
+        case val_T::OK:
+            status = eStatus::SUCCESS;
+            break;
+        case val_T::ERROR:
+            status = eStatus::FAILURE;
+            break;
+        default:
+            status = eStatus::NOT_SET;
+            break;
+        };
+    }
+
+
     bool operator==( const Status_t& rhs ) const {
         return status == rhs.status;
     }
@@ -28,6 +48,7 @@ struct Status_t {
     bool operator!=( const Status_t& rhs ) const {
         return status != rhs.status;
     }
+
 
     /* const */ eStatus     status;
     /* const */ std::string msg;

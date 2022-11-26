@@ -3,14 +3,19 @@
 
 #include "statusType.h"
 #include "math/linAlg.h"
-#include "shader.h"
+#include "gfxAPI/shader.h"
 
 #include <stdint.h>
 #include <stddef.h>
 #include <array>
 #include <vector>
 
-struct PlyModel;
+namespace FileLoader {
+    struct PlyModel;
+}
+
+using namespace GfxAPI;
+using namespace FileLoader;
 
 struct gfxUtils {
 
@@ -58,7 +63,5 @@ struct gfxUtils {
 
     static int32_t glCheckError_( const char *file, const int line );
 };
-
-#define glCheckError() gfxUtils::glCheckError_(__FILE__, __LINE__) 
 
 #endif // _GFXUTILS_H_9ec4f00a_2117_4578_937e_9f4fb94dc759
