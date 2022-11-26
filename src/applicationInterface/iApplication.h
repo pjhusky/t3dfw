@@ -3,7 +3,9 @@
 
 #include "../statusType.h"
 
-struct ContextOpenGL;
+namespace GfxAPI {
+    struct ContextOpenGL;
+}
 
 struct iApplication {
     //Application( const ContextOpenGL& contextOpenGL );
