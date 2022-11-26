@@ -15,6 +15,11 @@ while in the project's root directory. This adds the framework to the folder t3d
 Later on, in your application you can update to the latest remote submodule commits by running
     
     git submodule update --remote --merge
+	
+... or maybe ...
+	
+	git submodule foreach git pull origin main
+	git pull
     
 # Pushing changes done to one of the submodules
 
