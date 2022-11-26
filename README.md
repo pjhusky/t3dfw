@@ -10,6 +10,12 @@ In your new application, run
 
 while in the project's root directory. This adds the framework to the folder t3dfw inside your project's root folder. Note that for this to work, your appliation must already be a valid git repository, e.g., you must run `git init` or clone another git repo beforehand. 
 
+# Keeping t3dfw up to date
+
+Later on, in your application you can update to the latest remote submodule commits by running
+    
+    git submodule update --remote --merge
+    
 # Pushing changes done to one of the submodules
 
 Navigate to submodule folder and run
