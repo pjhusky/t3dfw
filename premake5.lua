@@ -211,16 +211,26 @@
 		filter {} 
 
 
+-- NOTE: this way we could trigger cleanup code as well:
+-- if _ACTION == 'clean' then
+-- 	print("clean action T3DFW!")
+-- end
+				
+
 -- https://stackoverflow.com/questions/33307155/how-to-clean-projects-with-premake5
 -- Clean Function --
 newaction {
 	trigger     = "clean",
 	description = "clean T3DFW",
-	execute     = function ()
-	   print("cleaning T3DFW ...")
-	   os.rmdir("./obj")
-	   os.rmdir("./bin")
-	   print("done.")
-	end
- }
+	onProject 	= function(prj)
+		print("Clean action for project " .. prj.name)
+		print("project " .. prj.name .. ", dir: " .. prj.location )
+		print("cleaning T3DFW ...")
+		os.rmdir( prj.location .. "/obj" )
+		os.rmdir( prj.location .. "/bin" )
+		os.remove( prj.location .. "/*.sln" )
+		os.remove( prj.location .. "/*.vcxproj" )
+		os.remove( prj.location .. "/*.vcxproj.*" )
+	end,	
+}
  
