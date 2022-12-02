@@ -12,6 +12,9 @@
 
 #include <glad/glad.h>
 
+#include <thread>
+#include <chrono>
+
 #include <cassert>
 
 namespace {
