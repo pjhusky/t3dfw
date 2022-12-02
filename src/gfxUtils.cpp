@@ -403,3 +403,16 @@ Status_t gfxUtils::createTexFromImage(  const std::string& imgFilePath,
     glPixelStorei( GL_UNPACK_ALIGNMENT, 4 ); // needed for RGB images with odd width
     return Status_t::OK();        
 }
+
+void gfxUtils::limitFrameRate( double deltaFrame_s, const float maxFrameRate /*= 60.0f*/ ) {
+    static const float duration_maxFrameRate_ms = 1000.0f / maxFrameRate;
+    clock_t sleep_time_ms =
+        duration_maxFrameRate_ms -
+        (deltaFrame_s * 1000.0f)
+        - 0.1f; // account for small amount of overhead to not go overboard with idling
+
+    if (sleep_time_ms > 0) {
+        std::this_thread::sleep_for
+        ( std::chrono::milliseconds( sleep_time_ms ) );
+    }
+}

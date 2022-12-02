@@ -62,6 +62,9 @@ struct gfxUtils {
                                         int32_t& imgH );
 
     static int32_t glCheckError_( const char *file, const int line );
+
+
+    static void limitFrameRate( double deltaFrame_s, const float maxFrameRate = 60.0f );
 };
 
 #endif // _GFXUTILS_H_9ec4f00a_2117_4578_937e_9f4fb94dc759
