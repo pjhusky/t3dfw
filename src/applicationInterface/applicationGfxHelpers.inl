@@ -3,6 +3,7 @@
 #if ( STRIP_INCLUDES_FROM_INL != 1 )
 #include "contextOpenGL.h"
 #include "statusType.h"
+#include "apiAbstractions.h"
 #endif
 
 static Status_t createRenderTargetTextures(
@@ -23,8 +24,8 @@ static Status_t createRenderTargetTextures(
     Texture::Desc_t colorTexDesc; // GL_RGBA8
     colorTexDesc.texDim = texDim;
     colorTexDesc.numChannels = 4;
-    colorTexDesc.channelType = Texture::eChannelType::i8;
-    colorTexDesc.semantics = Texture::eSemantics::color;
+    colorTexDesc.channelType = eChannelType::i8;
+    colorTexDesc.semantics = eSemantics::color;
     colorTexDesc.isMipMapped = true;
     colorRenderTargetTex.create(colorTexDesc);
 
@@ -33,8 +34,8 @@ static Status_t createRenderTargetTextures(
     Texture::Desc_t normalTexDesc; // GL_RGB16F
     normalTexDesc.texDim = texDim;
     normalTexDesc.numChannels = 3;
-    normalTexDesc.channelType = Texture::eChannelType::f16;
-    normalTexDesc.semantics = Texture::eSemantics::color;
+    normalTexDesc.channelType = eChannelType::f16;
+    normalTexDesc.semantics = eSemantics::color;
     normalTexDesc.isMipMapped = false;
     normalRenderTargetTex.create(normalTexDesc);
 
@@ -43,8 +44,8 @@ static Status_t createRenderTargetTextures(
     Texture::Desc_t silhouetteTexDesc; // GL_R8
     silhouetteTexDesc.texDim = texDim;
     silhouetteTexDesc.numChannels = 1;
-    silhouetteTexDesc.channelType = Texture::eChannelType::i8;
-    silhouetteTexDesc.semantics = Texture::eSemantics::color;
+    silhouetteTexDesc.channelType = eChannelType::i8;
+    silhouetteTexDesc.semantics = eSemantics::color;
     silhouetteTexDesc.isMipMapped = false;
     silhouetteRenderTargetTex.create(silhouetteTexDesc);
 
@@ -53,8 +54,8 @@ static Status_t createRenderTargetTextures(
     Texture::Desc_t depthTexDesc; // GL_DEPTH_COMPONENT32F
     depthTexDesc.texDim = texDim;
     depthTexDesc.numChannels = 1;
-    depthTexDesc.channelType = Texture::eChannelType::f32depth;
-    depthTexDesc.semantics = Texture::eSemantics::depth;
+    depthTexDesc.channelType = eChannelType::f32depth;
+    depthTexDesc.semantics = eSemantics::depth;
     depthTexDesc.isMipMapped = false;
     depthRenderTargetTex.create(depthTexDesc);
 
