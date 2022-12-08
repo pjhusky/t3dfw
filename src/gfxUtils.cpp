@@ -232,14 +232,14 @@ uint32_t gfxUtils::createPlyModelGfxBuffers(
     }
 #if 1 // load vertex normals !!!
     std::array< const char *const, 3 > propertyNormalNames{ "nx", "ny", "nz" };
-    for ( int32_t i = 0; i < propertyNormalNames.size(); i++ ) {
+    for ( size_t i = 0; i < propertyNormalNames.size(); i++ ) {
         size_t numElements;
         const auto *const pPlyNormalsDesc = plyModel.getPropertyByName( propertyNormalNames[ i ], numElements );
         if ( pPlyNormalsDesc != nullptr ) {
             glBindBuffer( GL_ARRAY_BUFFER, plyNormals_VBO[ i ] );
             const size_t numBytes = numElements * PlyModel::dataTypeNumBytes[ static_cast< int32_t >( pPlyNormalsDesc->dataType ) ];
             glBufferData( GL_ARRAY_BUFFER, numBytes, pPlyNormalsDesc->data.data(), GL_STATIC_DRAW );
-            const uint32_t attribIdx = i + propertyCoordNames.size();
+            const uint32_t attribIdx = static_cast<uint32_t>( i + propertyCoordNames.size() );
             const int32_t components = 1;
             assert( pPlyNormalsDesc->dataType == PlyModel::eDataType::f32 );
             glVertexAttribPointer( attribIdx, components, GL_FLOAT, GL_FALSE, 0, 0 ); // the last two zeros mean "tightly packed"
@@ -249,14 +249,14 @@ uint32_t gfxUtils::createPlyModelGfxBuffers(
 #endif
 #if 1
     std::array< const char *const, 3 > propertyColorNames{ "red", "green", "blue" };
-    for ( int32_t i = 0; i < propertyColorNames.size(); i++ ) {
+    for ( size_t i = 0; i < propertyColorNames.size(); i++ ) {
         size_t numElements;
         const auto *const pPlyVertDesc = plyModel.getPropertyByName( propertyColorNames[ i ], numElements );
         if ( pPlyVertDesc != nullptr ) {
             glBindBuffer( GL_ARRAY_BUFFER, plyColors_VBO[ i ] );
             const size_t numBytes = numElements * PlyModel::dataTypeNumBytes[ static_cast< int32_t >( pPlyVertDesc->dataType ) ];
             glBufferData( GL_ARRAY_BUFFER, numBytes, pPlyVertDesc->data.data(), GL_STATIC_DRAW );
-            const uint32_t attribIdx = i + propertyCoordNames.size() + propertyNormalNames.size(); // offset by the amount of vertex coord attribs used
+            const uint32_t attribIdx = static_cast<uint32_t>( i + propertyCoordNames.size() + propertyNormalNames.size() ); // offset by the amount of vertex coord attribs used
             const int32_t components = 1;
             assert( pPlyVertDesc->dataType == PlyModel::eDataType::u8 );
             glVertexAttribPointer( attribIdx, components, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0 ); // the last two zeros mean "tightly packed"
@@ -269,7 +269,7 @@ uint32_t gfxUtils::createPlyModelGfxBuffers(
 
     // create buffer texture for each plyCoords_VBO and plyNormals_VBO
     if ( pOrigMeshBufferTex != nullptr ) { 
-        glGenTextures( pOrigMeshBufferTex->size(), pOrigMeshBufferTex->data() );
+        glGenTextures( static_cast<GLsizei>(pOrigMeshBufferTex->size()), pOrigMeshBufferTex->data() );
         for ( int32_t i = 0; i < propertyCoordNames.size(); i++ ) { 
             glBindTexture( GL_TEXTURE_BUFFER, pOrigMeshBufferTex->data()[ i ] );
             glTexBuffer( GL_TEXTURE_BUFFER, GL_R32F, plyCoords_VBO[ i ] );
@@ -379,7 +379,7 @@ Status_t gfxUtils::createTexFromImage(  const std::string& imgFilePath,
     glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); // needed for RGB images with odd width
     uint8_t* pData = stbi_load( imgFilePath.c_str(), &imgW, &imgH, &imgNumChannels, 0 );
 
-    glGenTextures( imgTex.size(), imgTex.data() );
+    glGenTextures( static_cast<GLsizei>( imgTex.size() ), imgTex.data() );
     for ( size_t i = 0; i < imgTex.size(); i++ ) {
         glBindTexture( GL_TEXTURE_2D, imgTex[ i ] );
         constexpr int32_t mipLvl = 0;
@@ -409,10 +409,10 @@ Status_t gfxUtils::createTexFromImage(  const std::string& imgFilePath,
 
 void gfxUtils::limitFrameRate( double deltaFrame_s, const float maxFrameRate /*= 60.0f*/ ) {
     static const float duration_maxFrameRate_ms = 1000.0f / maxFrameRate;
-    clock_t sleep_time_ms =
+    clock_t sleep_time_ms = static_cast<clock_t>(
         duration_maxFrameRate_ms -
-        (deltaFrame_s * 1000.0f)
-        - 0.1f; // account for small amount of overhead to not go overboard with idling
+        (deltaFrame_s * 1000.0)
+        - 0.1 ); // account for small amount of overhead to not go overboard with idling
 
     if (sleep_time_ms > 0) {
         std::this_thread::sleep_for

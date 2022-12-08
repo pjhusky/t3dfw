@@ -15,7 +15,7 @@ static Status_t createRenderTargetTextures(
     Texture& silhouetteRenderTargetTex,
     Texture& depthRenderTargetTex) {
 
-    glGenFramebuffers(fbos.size(), fbos.data());
+    glGenFramebuffers( static_cast<GLsizei>( fbos.size() ), fbos.data());
 
     linAlg::i32vec3_t texDim{ renderTargetW, renderTargetH, 0 };
 
@@ -66,11 +66,11 @@ static Status_t createRenderTargetTextures(
         glBindFramebuffer(GL_FRAMEBUFFER, fbos[fboIdx]);
 
         std::array< GLenum, 2 > drawBuffersConfig{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT0 + 2 };
-        glDrawBuffers(drawBuffersConfig.size(), drawBuffersConfig.data());
+        glDrawBuffers( static_cast<GLsizei>(drawBuffersConfig.size()), drawBuffersConfig.data());
 
         int32_t colorTexIdx = 0;
         { // color texture
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorTexIdx, GL_TEXTURE_2D, colorRenderTargetTex.handle(), 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorTexIdx, GL_TEXTURE_2D, static_cast<GLuint>(colorRenderTargetTex.handle()), 0);
 
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { return Status_t::ERROR(); }
 
@@ -79,14 +79,14 @@ static Status_t createRenderTargetTextures(
         }
         glCheckError();
         { // silhouette texture
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + 1, GL_TEXTURE_2D, silhouetteRenderTargetTex.handle(), 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + 1, GL_TEXTURE_2D, static_cast<GLuint>(silhouetteRenderTargetTex.handle()), 0);
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { return Status_t::ERROR(); }
             constexpr float clearColor[]{ 0.0f, 0.0f, 0.0f, 0.0f };
             glClearBufferfv(GL_COLOR, 2, clearColor);
         }
         int32_t normalTexIdx = 0;
         { // normal texture
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + 2, GL_TEXTURE_2D, normalRenderTargetTex.handle(), 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + 2, GL_TEXTURE_2D, static_cast<GLuint>(normalRenderTargetTex.handle()), 0);
 
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { return Status_t::ERROR(); }
 
@@ -97,7 +97,7 @@ static Status_t createRenderTargetTextures(
         //for ( int32_t depthTexIdx = 0; depthTexIdx < depthRenderTargetTex.size(); depthTexIdx++ ) { // depth texture
         int32_t depthTexIdx = 0;
         {
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthRenderTargetTex.handle(), 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, static_cast<GLuint>(depthRenderTargetTex.handle()), 0);
 
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { return Status_t::ERROR(); }
 
@@ -133,7 +133,7 @@ static void destroyRenderTargetTextures(
     silhouetteRenderTargetTex.destroy();
     depthRenderTargetTex.destroy();
 
-    glDeleteFramebuffers(fbos.size(), fbos.data());
+    glDeleteFramebuffers( static_cast<GLuint>(fbos.size()), fbos.data());
 }
 
 static void createScreenQuadMatrix(
