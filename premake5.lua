@@ -102,11 +102,13 @@
 		return GLFW_BASE_DIR
 	end
 	
-	-- local T3DFW_BASE_DIR = "t3dfw/"
-	local T3DFW_BASE_DIR = "./"
+	local PRJ_LOCATION = "%{prj.location}/"
+	-- local T3DFW_BASE_DIR = "./"
+	local T3DFW_BASE_DIR = PRJ_LOCATION
 	local T3DFW_EXTERNAL_DIR = T3DFW_BASE_DIR .. "external/"
 	local T3DFW_SRC_DIR = T3DFW_BASE_DIR .. "src/"
 	
+	local LINALG_DIR = T3DFW_SRC_DIR .. "math/"
 	local GFX_API_DIR = T3DFW_SRC_DIR .. "gfxAPI/"
 	local GLAD_BASE_DIR = GFX_API_DIR .. "glad/"
 	
@@ -119,6 +121,9 @@
 	
 	-- main project	
 	project "T3DFW_LIB_Project"
+
+		-- objdir "obj/%{cfg.platform}_%{cfg.buildcfg}"
+		-- objdir "!obj/$(Platform)_$(Configuration)"
 
 		openmp "On" -- ALTERNATIVELY per filter: buildoptions {"-fopenmp"}
 	
@@ -162,8 +167,11 @@
 		filter {}
 
 		includedirs { 
+			_SCRIPT_DIR,
+			PRJ_LOCATION,
 			GLFW_BASE_DIR .. "include/",
 			GLAD_BASE_DIR .. "include/", 
+			LINALG_DIR,
 			GFX_API_DIR,
 			STB_BASE_DIR, 
 			STL_READER_DIR, 
