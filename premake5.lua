@@ -99,6 +99,11 @@
 			libdirs { GLFW_LIB_DIR }
 			--links { "glfw3" }
 			
+		filter "configurations:Debug"
+			symbols "On"
+
+		filter {}
+
 		return GLFW_BASE_DIR
 	end
 	
@@ -160,10 +165,15 @@
 			
 		filter {}
 
-		filter { "configurations:Debug", "platforms:Win*", "action:gmake*", "toolset:gcc" }		
-			buildoptions { "-g" }
+		-- filter { "configurations:Debug" }
+			-- optimize "Debug"
+			-- symbols "On"
+
+		-- filter { "configurations:Debug", "platforms:Win*", "action:gmake*", "toolset:gcc" }		
+			-- buildoptions { "-g" }
 			-- https://stackoverflow.com/questions/54969270/how-to-use-gcc-for-compilation-and-debug-on-vscode
 			-- buildoptions { "-gdwarf-4 -g3" }
+
 		filter {}
 
 		includedirs { 
