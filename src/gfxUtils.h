@@ -19,6 +19,12 @@ using namespace FileLoader;
 
 struct gfxUtils {
 
+    struct bufferHandles_t {
+        uint32_t vaoHandle;
+        std::vector< uint32_t > vboHandles;
+        uint32_t eboHandle;
+    };
+
     using path_t = std::string;
 
     static Status_t createShader( Shader& shaderProgram, const std::vector< std::pair< path_t, Shader::eShaderStage > >& shaderBuildInfo );
@@ -40,7 +46,7 @@ struct gfxUtils {
         const float distFactor,
         linAlg::mat4_t& modelViewMatrix );
 
-    static uint32_t createMeshGfxBuffers(
+    static bufferHandles_t createMeshGfxBuffers(
         const size_t& numVertexCoordVec3s,
         const std::vector< float >& vertexCoordFloats, 
         const size_t& numNormalVec3s,
@@ -48,7 +54,7 @@ struct gfxUtils {
         const size_t& numIndices,
         const std::vector< uint32_t >& indices );
     
-    static void freeMeshGfxBuffers( uint32_t vaoHandle );
+    static void freeMeshGfxBuffers( bufferHandles_t& bufferHandles );
 
     static Status_t loadImageIntoArray( const std::string& imgFilePath, 
                                         std::vector< uint8_t >& imgData, 

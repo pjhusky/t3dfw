@@ -128,7 +128,7 @@ uint32_t gfxUtils::createScreenQuadGfxBuffers() { // screen quad
     return screenVAO;
 }
 
-uint32_t gfxUtils::createMeshGfxBuffers(
+gfxUtils::bufferHandles_t gfxUtils::createMeshGfxBuffers(
     const size_t& numVertexCoordVec3s,
     const std::vector< float >& vertexCoordFloats,
     const size_t& numNormalVec3s,
@@ -180,16 +180,18 @@ uint32_t gfxUtils::createMeshGfxBuffers(
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    glDeleteBuffers(1, &stlCoords_VBO);
-    glDeleteBuffers(1, &stlNormals_VBO);
-    glDeleteBuffers(1, &stlModel_EBO);
-
-    return stlModel_VAO;
+    return bufferHandles_t{
+        .vaoHandle = stlModel_VAO,
+        .vboHandles = std::vector< uint32_t >{ stlCoords_VBO, stlNormals_VBO },
+        .eboHandle = stlModel_EBO,
+    };
 
 }
 
-void gfxUtils::freeMeshGfxBuffers(uint32_t vaoHandle) {
-    glDeleteVertexArrays(1, &vaoHandle);
+void gfxUtils::freeMeshGfxBuffers( gfxUtils::bufferHandles_t& bufferHandles ) {
+    glDeleteVertexArrays(1, &bufferHandles.vaoHandle);
+    glDeleteBuffers( bufferHandles.vboHandles.size(), bufferHandles.vboHandles.data() );
+    glDeleteBuffers( 1, &bufferHandles.eboHandle );
 }
 
 uint32_t gfxUtils::createPlyModelGfxBuffers( 
@@ -353,7 +355,7 @@ void gfxUtils::createModelViewMatrixForModel(
     
     linAlg::multMatrix( modelMatrix3x4, viewTranslationMatrix, viewRotMatrix );
 
-    linAlg::cast( modelViewMatrix, modelMatrix3x4 );
+    linAlg::castMatrix( modelViewMatrix, modelMatrix3x4 );
 }
 
 Status_t gfxUtils::loadImageIntoArray( const std::string& imgFilePath, 
