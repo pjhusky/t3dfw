@@ -72,7 +72,7 @@ Status_t gfxUtils::createShader( Shader& shaderProgram, const std::vector< std::
     //return Status_t::OK();
 }
 
-uint32_t gfxUtils::createScreenQuadGfxBuffers() { // screen quad
+gfxUtils::bufferHandles_t gfxUtils::createScreenQuadGfxBuffers() { // screen quad
     
     //float vertices[] = {
     //    -1.0f, +1.0f, 1.0f,  // top right
@@ -125,7 +125,11 @@ uint32_t gfxUtils::createScreenQuadGfxBuffers() { // screen quad
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0); 
 
-    return screenVAO;
+    return bufferHandles_t{
+        .vaoHandle = screenVAO,
+        .vboHandles = std::vector< uint32_t >{ VBO },
+        .eboHandle = EBO,
+    };
 }
 
 gfxUtils::bufferHandles_t gfxUtils::createMeshGfxBuffers(
