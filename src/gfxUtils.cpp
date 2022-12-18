@@ -194,7 +194,7 @@ gfxUtils::bufferHandles_t gfxUtils::createMeshGfxBuffers(
 
 void gfxUtils::freeMeshGfxBuffers( gfxUtils::bufferHandles_t& bufferHandles ) {
     glDeleteVertexArrays(1, &bufferHandles.vaoHandle);
-    glDeleteBuffers( bufferHandles.vboHandles.size(), bufferHandles.vboHandles.data() );
+    glDeleteBuffers( static_cast<GLsizei>(bufferHandles.vboHandles.size()), bufferHandles.vboHandles.data() );
     glDeleteBuffers( 1, &bufferHandles.eboHandle );
 }
 
