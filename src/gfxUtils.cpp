@@ -59,7 +59,9 @@ Status_t gfxUtils::createShader( Shader& shaderProgram, const std::vector< std::
 
         Status_t fileReadResult = Status_t::OK();
         std::string shaderStageString = "";
+    #if defined( VERBOSE_GFX_DEBUG )
         printf( "now reading file %s\n", filePath.c_str() );
+    #endif
         fileReadResult = loadFile( filePath, shaderStageString );
         //printf( "--------------\n%s\n--------------\n", shaderStageString.c_str() );
         assert( fileReadResult == Status_t::OK() );
@@ -367,7 +369,9 @@ Status_t gfxUtils::loadImageIntoArray( const std::string& imgFilePath,
                                        int32_t& imgW, 
                                        int32_t& imgH, 
                                        int32_t& imgNumChannels ) {
+#if defined( VERBOSE_GFX_DEBUG )
     printf( "loading image '%s'\n", imgFilePath.c_str() );
+#endif
     stbi_set_flip_vertically_on_load( 1 );
     uint8_t* pData = stbi_load( imgFilePath.c_str(), &imgW, &imgH, &imgNumChannels, 0 );
     imgData.resize( imgW * imgH * imgNumChannels );
