@@ -4,16 +4,18 @@
 #include "contextOpenGL.h"
 #include "statusType.h"
 #include "apiAbstractions.h"
+#include "gfxApi.h"
+#include <vector>
 #endif
 
 static Status_t createRenderTargetTextures(
     const int32_t renderTargetW,
     const int32_t renderTargetH,
     std::vector< uint32_t >& fbos,
-    Texture& colorRenderTargetTex,
-    Texture& normalRenderTargetTex,
-    Texture& silhouetteRenderTargetTex,
-    Texture& depthRenderTargetTex) {
+    GfxAPI::Texture& colorRenderTargetTex,
+    GfxAPI::Texture& normalRenderTargetTex,
+    GfxAPI::Texture& silhouetteRenderTargetTex,
+    GfxAPI::Texture& depthRenderTargetTex) {
 
     glGenFramebuffers( static_cast<GLsizei>( fbos.size() ), fbos.data());
 
@@ -21,41 +23,41 @@ static Status_t createRenderTargetTextures(
 
     glCheckError();
 
-    Texture::Desc_t colorTexDesc; // GL_RGBA8
+    GfxAPI::Texture::Desc_t colorTexDesc; // GL_RGBA8
     colorTexDesc.texDim = texDim;
     colorTexDesc.numChannels = 4;
-    colorTexDesc.channelType = eChannelType::i8;
-    colorTexDesc.semantics = eSemantics::color;
+    colorTexDesc.channelType = GfxAPI::eChannelType::i8;
+    colorTexDesc.semantics = GfxAPI::eSemantics::color;
     colorTexDesc.isMipMapped = true;
     colorRenderTargetTex.create(colorTexDesc);
 
     glCheckError();
 
-    Texture::Desc_t normalTexDesc; // GL_RGB16F
+    GfxAPI::Texture::Desc_t normalTexDesc; // GL_RGB16F
     normalTexDesc.texDim = texDim;
     normalTexDesc.numChannels = 3;
-    normalTexDesc.channelType = eChannelType::f16;
-    normalTexDesc.semantics = eSemantics::color;
+    normalTexDesc.channelType = GfxAPI::eChannelType::f16;
+    normalTexDesc.semantics = GfxAPI::eSemantics::color;
     normalTexDesc.isMipMapped = false;
     normalRenderTargetTex.create(normalTexDesc);
 
     glCheckError();
 
-    Texture::Desc_t silhouetteTexDesc; // GL_R8
+    GfxAPI::Texture::Desc_t silhouetteTexDesc; // GL_R8
     silhouetteTexDesc.texDim = texDim;
     silhouetteTexDesc.numChannels = 1;
-    silhouetteTexDesc.channelType = eChannelType::i8;
-    silhouetteTexDesc.semantics = eSemantics::color;
+    silhouetteTexDesc.channelType = GfxAPI::eChannelType::i8;
+    silhouetteTexDesc.semantics = GfxAPI::eSemantics::color;
     silhouetteTexDesc.isMipMapped = false;
     silhouetteRenderTargetTex.create(silhouetteTexDesc);
 
     glCheckError();
 
-    Texture::Desc_t depthTexDesc; // GL_DEPTH_COMPONENT32F
+    GfxAPI::Texture::Desc_t depthTexDesc; // GL_DEPTH_COMPONENT32F
     depthTexDesc.texDim = texDim;
     depthTexDesc.numChannels = 1;
-    depthTexDesc.channelType = eChannelType::f32depth;
-    depthTexDesc.semantics = eSemantics::depth;
+    depthTexDesc.channelType = GfxAPI::eChannelType::f32depth;
+    depthTexDesc.semantics = GfxAPI::eSemantics::depth;
     depthTexDesc.isMipMapped = false;
     depthRenderTargetTex.create(depthTexDesc);
 
@@ -112,12 +114,12 @@ static Status_t createRenderTargetTextures(
 
 static void destroyRenderTargetTextures(
     std::vector< uint32_t >& fbos,
-    Texture& colorRenderTargetTex,
-    Texture& normalRenderTargetTex,
-    Texture& silhouetteRenderTargetTex,
-    Texture& depthRenderTargetTex) {
+    GfxAPI::Texture& colorRenderTargetTex,
+    GfxAPI::Texture& normalRenderTargetTex,
+    GfxAPI::Texture& silhouetteRenderTargetTex,
+    GfxAPI::Texture& depthRenderTargetTex) {
 
-    Texture::unbindAllTextures();
+    GfxAPI::Texture::unbindAllTextures();
 
     glBindFramebuffer(GL_FRAMEBUFFER, fbos[0]);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);

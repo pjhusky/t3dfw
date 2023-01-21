@@ -14,7 +14,6 @@ namespace FileLoader {
     struct PlyModel;
 }
 
-using namespace GfxAPI;
 using namespace FileLoader;
 
 struct gfxUtils {
@@ -27,7 +26,7 @@ struct gfxUtils {
 
     using path_t = std::string;
 
-    static Status_t createShader( Shader& shaderProgram, const std::vector< std::pair< path_t, Shader::eShaderStage > >& shaderBuildInfo );
+    static Status_t createShader( GfxAPI::Shader& shaderProgram, const std::vector< std::pair< path_t, GfxAPI::Shader::eShaderStage > >& shaderBuildInfo );
 
     static bufferHandles_t createScreenQuadGfxBuffers();
 

@@ -51,7 +51,7 @@ namespace {
     }
 }
 
-Status_t gfxUtils::createShader( Shader& shaderProgram, const std::vector< std::pair< path_t, Shader::eShaderStage > >& shaderBuildInfo ) {
+Status_t gfxUtils::createShader( GfxAPI::Shader& shaderProgram, const std::vector< std::pair< path_t, GfxAPI::Shader::eShaderStage > >& shaderBuildInfo ) {
     
     for ( const auto& buildInfo : shaderBuildInfo ) {
         const auto& filePath = buildInfo.first;
