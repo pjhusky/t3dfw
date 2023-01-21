@@ -8,6 +8,10 @@
 #include <vector>
 #endif
 
+#ifdef ERROR
+    #undef ERROR
+#endif
+
 static Status_t createRenderTargetTextures(
     const int32_t renderTargetW,
     const int32_t renderTargetH,
