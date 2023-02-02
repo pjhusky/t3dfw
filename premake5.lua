@@ -108,7 +108,6 @@
 	end
 	
 	local PRJ_LOCATION = "%{prj.location}/"
-	-- local T3DFW_BASE_DIR = "./"
 	local T3DFW_BASE_DIR = PRJ_LOCATION
 	local T3DFW_EXTERNAL_DIR = T3DFW_BASE_DIR .. "external/"
 	local T3DFW_SRC_DIR = T3DFW_BASE_DIR .. "src/"

@@ -18,23 +18,12 @@
 #include <cassert>
 
 namespace {
-    //static Status_t loadFile( const std::string& filepath, std::string& fileContent ) {
-    //    std::ifstream fileStream( filepath );
-    //    if ( !fileStream.good() ) { return Status_t::ERROR(); }
-
-    //    fileContent = std::string{ 
-    //        std::istreambuf_iterator< char >( fileStream ),
-    //        std::istreambuf_iterator< char >() };
-
-    //    return Status_t::OK();
-    //}
 
     static Status_t loadFile( const std::string& filepath, std::string& fileContent ) {
         FILE* fp = fopen( filepath.c_str(), "r" );
         fseek( fp, 0L, SEEK_END );
         const auto fileSizeBytes = ftell( fp );
         fseek( fp, 0L, SEEK_SET );
-
         
         fileContent.reserve( fileSizeBytes );
 
@@ -70,22 +59,9 @@ Status_t gfxUtils::createShader( GfxAPI::Shader& shaderProgram, const std::vecto
     }
 
     return shaderProgram.build();
-
-    //return Status_t::OK();
 }
 
 gfxUtils::bufferHandles_t gfxUtils::createScreenQuadGfxBuffers() { // screen quad
-    
-    //float vertices[] = {
-    //    -1.0f, +1.0f, 1.0f,  // top right
-    //    -1.0f, -1.0f, 1.0f,  // bottom right
-    //    +1.0f, -1.0f, 1.0f,  // bottom left
-    //    +1.0f, +1.0f, 1.0f   // top left 
-    //};
-    //uint32_t indices[] = {  // note that we start from 0!
-    //    0, 1, 2,   // first triangle
-    //    0, 2, 3    // second triangle
-    //}; 
 
     float vertices[] = {
         -1.0f, +1.0f, 0.0f,  // top left
@@ -113,7 +89,6 @@ gfxUtils::bufferHandles_t gfxUtils::createScreenQuadGfxBuffers() { // screen qua
     glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
     // 1. then set the vertex attributes pointers
     glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof( float ), reinterpret_cast< void* >( 0 ) );
-    //glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
 
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, EBO );
     glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW );
@@ -153,7 +128,6 @@ gfxUtils::bufferHandles_t gfxUtils::createMeshGfxBuffers(
 
     uint32_t stlModel_EBO;
     glGenBuffers(1, &stlModel_EBO);
-
 
     glBindVertexArray(stlModel_VAO);
     
@@ -274,7 +248,6 @@ uint32_t gfxUtils::createPlyModelGfxBuffers(
     }
 #endif
 
-
     // create buffer texture for each plyCoords_VBO and plyNormals_VBO
     if ( pOrigMeshBufferTex != nullptr ) { 
         glGenTextures( static_cast<GLsizei>(pOrigMeshBufferTex->size()), pOrigMeshBufferTex->data() );
@@ -290,7 +263,6 @@ uint32_t gfxUtils::createPlyModelGfxBuffers(
         }
         glBindTexture( GL_TEXTURE_BUFFER, 0 );
     }
-
 
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, plyModel_EBO );
     const auto *const pPlyIndicesDesc = plyModel.getPropertyByName( "vertex_indices", numPlyIndices );
@@ -312,7 +284,6 @@ uint32_t gfxUtils::createPlyModelGfxBuffers(
 
     glBindBuffer( GL_ARRAY_BUFFER, 0 ); 
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 ); 
-
 
     glDeleteBuffers(3, plyCoords_VBO);
     glDeleteBuffers(3, plyNormals_VBO);
@@ -401,7 +372,6 @@ Status_t gfxUtils::createTexFromImage(  const std::string& imgFilePath,
 
         // glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
         // glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER );
 

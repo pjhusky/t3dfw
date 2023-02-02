@@ -8,8 +8,6 @@ namespace GfxAPI {
 }
 
 struct iApplication {
-    //Application( const ContextOpenGL& contextOpenGL );
-
     virtual Status_t run() = 0;
 };
 

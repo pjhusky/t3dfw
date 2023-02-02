@@ -100,7 +100,6 @@ static Status_t createRenderTargetTextures(
             glClearBufferfv(GL_COLOR, 1, clearColor);
         }
         glCheckError();
-        //for ( int32_t depthTexIdx = 0; depthTexIdx < depthRenderTargetTex.size(); depthTexIdx++ ) { // depth texture
         int32_t depthTexIdx = 0;
         {
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, static_cast<GLuint>(depthRenderTargetTex.handle()), 0);

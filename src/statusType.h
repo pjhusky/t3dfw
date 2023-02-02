@@ -40,7 +40,6 @@ struct Status_t {
         };
     }
 
-
     bool operator==( const Status_t& rhs ) const {
         return status == rhs.status;
     }
@@ -48,7 +47,6 @@ struct Status_t {
     bool operator!=( const Status_t& rhs ) const {
         return status != rhs.status;
     }
-
 
     /* const */ eStatus     status;
     /* const */ std::string msg;
