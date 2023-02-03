@@ -2,21 +2,11 @@
 -- run: premake5 vs2022
 -- then open the VS2022 solution file
 --
--- additional info when using Qt
--- https://github.com/dcourtois/premake-qt
---
 --
 -- sample invocation for building from the command line:
 -- then open VS command prompt from the start menu "x64 Native Tools Command Prompt for VS 2017"
--- msbuild OrientationMatchingWorkspace.sln -target:OrientationMatchingProject -property:Configuration=Release -property:Platform="Win64"
+-- msbuild <SolutionFilename>.sln -target:<ProjectName> -property:Configuration=Release -property:Platform="Win64"
 --
-
---
--- NOTE: on macOS gmake2 doesn't work (moc error)
---    https://github.com/dcourtois/premake-qt/issues/15
---    https://github.com/premake/premake-core/issues/1398
--- for macOS, run: premake5 gmake
--- then, run make config=Release_macos
 --
 -- NOTE: minGW makefiles:
 --
@@ -34,44 +24,6 @@
 --
 -- workspace is roughly a VS solution; contains projects
 --
-
--- workspace "T3DFW_Workspace"
--- 	location "../"
-
--- 	-- https://premake.github.io/docs/characterset/
--- 	-- characterset ("MBCS")
-
--- 	--
--- 	-- setup your solution's configuration here ...
--- 	--
--- 	configurations { "Debug", "Release" }
--- 	platforms { "Win64", "macOS" }
-
--- 	filter { "platforms:Win64" }
--- 		system "Windows"
--- 		architecture "x86_64"		
-
--- 	filter { "platforms:macOS" }
--- 		system "macosx"
--- 		architecture "x86_64"		
-
--- 	filter { "system:Windows" }
--- 		systemversion "latest" -- To use the latest version of the SDK available
--- 		--	systemversion "10.0.10240.0" -- To specify the version of the SDK you want
-	
--- 		-- https://stackoverflow.com/questions/40667910/optimizing-a-single-file-in-a-premake-generated-vs-solution
--- 	filter { "configurations:Debug" }
--- 		optimize "Debug"
--- 		defines { "DEBUG", "TRACE" }
--- 		buildoptions{ "-fdiagnostics-color=always" }
--- 	filter { "configurations:Release" }
--- 		optimize "Speed"
--- 		defines { "NDEBUG" }
-
--- 	filter {}
-
-	-- cdialect "C99"
-	-- cppdialect "C++20"
 
 	function incorporateGlfw (GFX_API_DIR)
 		filter { "platforms:macosx" }
@@ -126,9 +78,6 @@
 	-- main project	
 	project "T3DFW_LIB_Project"
 
-		-- objdir "obj/%{cfg.platform}_%{cfg.buildcfg}"
-		-- objdir "!obj/$(Platform)_$(Configuration)"
-
 		openmp "On" -- ALTERNATIVELY per filter: buildoptions {"-fopenmp"}
 	
 		cdialect "C99"
@@ -154,25 +103,12 @@
 				"gomp",
 				--"bufferoverflowu", -- https://stackoverflow.com/questions/21627607/gcc-linker-error-undefined-reference-to-security-cookie
 			}
-			-- VS also links these two libs, but they seem to not be necessary... "odbc32.lib" "odbccp32.lib" 
-			-- buildoptions {"-fopenmp"} -- NOT NEEDED IF DEFINED AT PROJECT SCOPE AS "openmp "On""
-			-- linkoptions {"lgomp"}
+			-- VS also links these two libs, but they seem to be unnecessary... "odbc32.lib" "odbccp32.lib" 
 			defines { "UNIX", "_USE_MATH_DEFINES" }
 				
 		filter {"platforms:Win*", "vs*"}
 			defines { "_USE_MATH_DEFINES" }
 			
-		filter {}
-
-		-- filter { "configurations:Debug" }
-			-- optimize "Debug"
-			-- symbols "On"
-
-		-- filter { "configurations:Debug", "platforms:Win*", "action:gmake*", "toolset:gcc" }		
-			-- buildoptions { "-g" }
-			-- https://stackoverflow.com/questions/54969270/how-to-use-gcc-for-compilation-and-debug-on-vscode
-			-- buildoptions { "-gdwarf-4 -g3" }
-
 		filter {}
 
 		includedirs { 
@@ -187,7 +123,6 @@
 			NATIVEFILEDIALOG_DIR .. "include/",
 			IMGUI_DIR,
 		}	
-		
 		
 		shaderincludedirs { "src/shaders" }  
 		
@@ -208,17 +143,13 @@
 			"**.bat", 
 			"**.glsl",
 		}
-		-- excludes {  }
 		
-		-- https://premake.github.io/docs/defines/
-		-- "_MBCS", 
 		defines { "_WIN32", "WIN32", "_WINDOWS" }
 
-	
 		filter { "platforms:Win*" }
 			excludes { NATIVEFILEDIALOG_DIR .. "nfd_gtk.c", NATIVEFILEDIALOG_DIR .. "nfd_zenity.c" }
 
-			-- configuration "macosx"
+		-- configuration "macosx"
 		filter { "platforms:macosx" }
 			excludes { NATIVEFILEDIALOG_DIR .. "nfd_win.c" }
 
