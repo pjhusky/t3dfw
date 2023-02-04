@@ -51,8 +51,12 @@
 			libdirs { GLFW_LIB_DIR }
 			--links { "glfw3" }
 			
-		filter "configurations:Debug"
+			--buildoptions { "-fpermissive" }
+
+			
+		filter "configurations:Debug*"
 			symbols "On"
+			targetsuffix "_d"
 
 		filter {}
 
@@ -105,6 +109,8 @@
 			}
 			-- VS also links these two libs, but they seem to be unnecessary... "odbc32.lib" "odbccp32.lib" 
 			defines { "UNIX", "_USE_MATH_DEFINES" }
+			--undefines { "__STRICT_ANSI__" } -- for simdb wvsprintfA() - https://stackoverflow.com/questions/3445312/swprintf-and-vswprintf-not-declared
+			--cppdialect "gnu++20" -- https://github.com/assimp/assimp/issues/4190, https://premake.github.io/docs/cppdialect/
 				
 		filter {"platforms:Win*", "vs*"}
 			defines { "_USE_MATH_DEFINES", "_CRT_SECURE_NO_WARNINGS", "_WIN32", "WIN32", "_WINDOWS" }
