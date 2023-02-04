@@ -5,6 +5,11 @@
 
 #include <tchar.h>
 
+#define UTF8 0
+#if ( UTF8 != 0 )
+    #include "utfcpp/source/utf8.h" // solve C++17 UTF deprecation
+#endif
+
 namespace stringUtils {
     template < typename val_T >
     val_T min( const val_T& val1, const val_T& val2 ) {
@@ -15,6 +20,48 @@ namespace stringUtils {
     val_T max( const val_T& val1, const val_T& val2 ) {
         return ( val1 >= val2 ) ? val1 : val2;
     }
+
+#if ( UTF8 != 0 ) // solve C++17 UTF deprecation
+    // https://codingtidbit.com/2020/02/09/c17-codecvt_utf8-is-deprecated/
+    static inline std::string utf8_encode( const std::wstring& wStr )
+    {
+    #if 0
+        return std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes( wStr );
+    #else
+        std::string utf8line;
+
+        if (wStr.empty())
+            return utf8line;
+
+    #ifdef _MSC_VER
+        utf8::utf16to8( wStr.begin(), wStr.end(), std::back_inserter( utf8line ) );
+    #else
+        utf8::utf32to8( wStr.begin(), wStr.end(), std::back_inserter( utf8line ) );
+    #endif
+        return utf8line;
+    #endif
+    }
+
+    // https://codingtidbit.com/2020/02/09/c17-codecvt_utf8-is-deprecated/
+    static inline std::wstring utf8_decode( const std::string& sStr )
+    {
+    #if 0
+        return std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes( sStr );
+    #else
+        std::wstring wide_line;
+
+        if (sStr.empty())
+            return wide_line;
+
+    #ifdef _MSC_VER
+        utf8::utf8to16( sStr.begin(), sStr.end(), std::back_inserter( wide_line ) );
+    #else
+        utf8::utf8to32( sStr.begin(), sStr.end(), std::back_inserter( wide_line ) );
+    #endif
+        return wide_line;
+    #endif
+    }
+#endif
 
     template < typename val_T >
     static val_T convStrTo( const std::string& str ) {
