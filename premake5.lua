@@ -28,26 +28,26 @@
 	function incorporateGlfw (GFX_API_DIR)
 		filter { "platforms:macosx" }
 			linkoptions "-v -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit"
-			local GLFW_BASE_DIR = GFX_API_DIR .. "glfw-3.3.8.macosx.WIN64/"
-			local GLFW_LIB_DIR = GLFW_BASE_DIR .. "lib/"
+			local GLFW_BASE_DIR = path.normalize( path.join( GFX_API_DIR, "glfw-3.3.8.macosx.WIN64" ) )
+			local GLFW_LIB_DIR = path.normalize( path.join( GLFW_BASE_DIR, "lib" ) )
 			libdirs { GLFW_LIB_DIR }
 
 		filter {"platforms:macosx", "gmake"}
 			buildoptions {"-F /Library/Frameworks"}
 			linkoptions {"-F /Library/Frameworks"}
-			local GLFW_BASE_DIR = GFX_API_DIR .. "glfw-3.3.8.macosx.WIN64/"
-			local GLFW_LIB_DIR = GLFW_BASE_DIR .. "lib/"
+			local GLFW_BASE_DIR = path.normalize( path.join( GFX_API_DIR, "glfw-3.3.8.macosx.WIN64" ) )
+			local GLFW_LIB_DIR = path.normalize( path.join( GLFW_BASE_DIR, "lib" ) )
 			libdirs { GLFW_LIB_DIR }
 			
 		filter { "platforms:Win*", "action:vs*" }
-			local GLFW_BASE_DIR = GFX_API_DIR .. "glfw-3.3.8.bin.WIN64/"
-			local GLFW_LIB_DIR = GLFW_BASE_DIR .. "lib-vc2022"
+			local GLFW_BASE_DIR = path.normalize( path.join( GFX_API_DIR, "glfw-3.3.8.bin.WIN64" ) )
+			local GLFW_LIB_DIR = path.normalize( path.join( GLFW_BASE_DIR, "lib-vc2022" ) )
 			libdirs { GLFW_LIB_DIR }
 			links { "glfw3" }
 			
 		filter { "platforms:Win*", "action:gmake*", "toolset:gcc" }
-			local GLFW_BASE_DIR = GFX_API_DIR .. "glfw-3.3.8.bin.WIN64/"
-			local GLFW_LIB_DIR = GLFW_BASE_DIR .. "lib-mingw-w64"
+			local GLFW_BASE_DIR = path.normalize( path.join( GFX_API_DIR, "glfw-3.3.8.bin.WIN64" ) )
+			local GLFW_LIB_DIR = path.normalize( path.join( GLFW_BASE_DIR, "lib-mingw-w64" ) )
 			libdirs { GLFW_LIB_DIR }
 			--links { "glfw3" }
 			
@@ -59,21 +59,21 @@
 		return GLFW_BASE_DIR
 	end
 	
-	local PRJ_LOCATION = "%{prj.location}/"
+	local PRJ_LOCATION = path.normalize( "%{prj.location}" )
 	local T3DFW_BASE_DIR = PRJ_LOCATION
-	local T3DFW_EXTERNAL_DIR = T3DFW_BASE_DIR .. "external/"
-	local T3DFW_SRC_DIR = T3DFW_BASE_DIR .. "src/"
+	local T3DFW_EXTERNAL_DIR = path.normalize( path.join( T3DFW_BASE_DIR, "external" ) )
+	local T3DFW_SRC_DIR = path.normalize( path.join( T3DFW_BASE_DIR, "src" ) )
 	
-	local LINALG_DIR = T3DFW_SRC_DIR .. "math/"
-	local GFX_API_DIR = T3DFW_SRC_DIR .. "gfxAPI/"
-	local GLAD_BASE_DIR = GFX_API_DIR .. "glad/"
+	local LINALG_DIR = path.normalize( path.join( T3DFW_SRC_DIR, "math" ) )
+	local GFX_API_DIR = path.normalize( path.join( T3DFW_SRC_DIR, "gfxAPI" ) )
+	local GLAD_BASE_DIR = path.normalize( path.join( GFX_API_DIR, "glad" ) )
 	
-	local STB_BASE_DIR = T3DFW_EXTERNAL_DIR .. "stb/"
-	local STL_READER_DIR = T3DFW_EXTERNAL_DIR .. "stl_reader/"
+	local STB_BASE_DIR = path.normalize( path.join( T3DFW_EXTERNAL_DIR, "stb" ) )
+	local STL_READER_DIR = path.normalize( path.join( T3DFW_EXTERNAL_DIR, "stl_reader" ) )
 	
-	local NATIVEFILEDIALOG_DIR = T3DFW_EXTERNAL_DIR .. "nativefiledialog/"
+	local NATIVEFILEDIALOG_DIR = path.normalize( path.join( T3DFW_EXTERNAL_DIR, "nativefiledialog" ) )
 	
-	local IMGUI_DIR = T3DFW_EXTERNAL_DIR .. "imgui/"
+	local IMGUI_DIR = path.normalize( path.join( T3DFW_EXTERNAL_DIR, "imgui" ) )
 	
 	-- main project	
 	project "T3DFW_LIB_Project"
@@ -107,20 +107,20 @@
 			defines { "UNIX", "_USE_MATH_DEFINES" }
 				
 		filter {"platforms:Win*", "vs*"}
-			defines { "_USE_MATH_DEFINES" }
+			defines { "_USE_MATH_DEFINES", "_CRT_SECURE_NO_WARNINGS", "_WIN32", "WIN32", "_WINDOWS" }
 			
 		filter {}
 
 		includedirs { 
 			_SCRIPT_DIR,
 			PRJ_LOCATION,
-			GLFW_BASE_DIR .. "include/",
-			GLAD_BASE_DIR .. "include/", 
+			path.normalize( path.join( GLFW_BASE_DIR, "include" ) ),
+			path.normalize( path.join( GLAD_BASE_DIR, "include" ) ), 
 			LINALG_DIR,
 			GFX_API_DIR,
 			STB_BASE_DIR, 
 			STL_READER_DIR, 
-			NATIVEFILEDIALOG_DIR .. "include/",
+			path.normalize( path.join( NATIVEFILEDIALOG_DIR, "include" ) ),
 			IMGUI_DIR,
 		}	
 		
@@ -144,14 +144,12 @@
 			"**.glsl",
 		}
 		
-		defines { "_WIN32", "WIN32", "_WINDOWS" }
-
 		filter { "platforms:Win*" }
-			excludes { NATIVEFILEDIALOG_DIR .. "nfd_gtk.c", NATIVEFILEDIALOG_DIR .. "nfd_zenity.c" }
+			excludes { path.join( NATIVEFILEDIALOG_DIR, "nfd_gtk.c" ), path.join( NATIVEFILEDIALOG_DIR, "nfd_zenity.c" ) }
 
 		-- configuration "macosx"
 		filter { "platforms:macosx" }
-			excludes { NATIVEFILEDIALOG_DIR .. "nfd_win.c" }
+			excludes { path.join( NATIVEFILEDIALOG_DIR, "nfd_win.c" ) }
 
 		-- 
 		-- disable filters, so this is valid for all projects
