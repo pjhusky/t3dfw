@@ -82,6 +82,18 @@
 	-- main project	
 	project "T3DFW_LIB_Project"
 
+		local allDefinesProject = { "_USE_MATH_DEFINES" }
+		if _ACTION == "gamke2" then
+			table.insert( allDefinesProject, "UNIX" )
+		elseif string.match( _ACTION, 'vs*') then
+			table.insert( allDefinesProject, "_WIN32" )
+			table.insert( allDefinesProject, "WIN32" )
+			table.insert( allDefinesProject, "_WIN64" )
+			table.insert( allDefinesProject, "_AMD64_" )
+			table.insert( allDefinesProject, "_WINDOWS" )
+			table.insert( allDefinesProject, "_CRT_SECURE_NO_WARNINGS" )
+		end
+
 		openmp "On" -- ALTERNATIVELY per filter: buildoptions {"-fopenmp"}
 	
 		cdialect "C99"
@@ -108,12 +120,12 @@
 				--"bufferoverflowu", -- https://stackoverflow.com/questions/21627607/gcc-linker-error-undefined-reference-to-security-cookie
 			}
 			-- VS also links these two libs, but they seem to be unnecessary... "odbc32.lib" "odbccp32.lib" 
-			defines { "UNIX", "_USE_MATH_DEFINES" }
+			--defines { "UNIX", "_USE_MATH_DEFINES" }
 			--undefines { "__STRICT_ANSI__" } -- for simdb wvsprintfA() - https://stackoverflow.com/questions/3445312/swprintf-and-vswprintf-not-declared
 			--cppdialect "gnu++20" -- https://github.com/assimp/assimp/issues/4190, https://premake.github.io/docs/cppdialect/
 				
 		filter {"platforms:Win*", "vs*"}
-			defines { "_USE_MATH_DEFINES", "_CRT_SECURE_NO_WARNINGS", "_WIN32", "WIN32", "_WINDOWS" }
+			--defines { "_USE_MATH_DEFINES", "_CRT_SECURE_NO_WARNINGS", "_WIN32", "WIN32", "_WINDOWS" }
 			
 		filter {}
 
@@ -156,6 +168,15 @@
 		-- configuration "macosx"
 		filter { "platforms:macosx" }
 			excludes { path.join( NATIVEFILEDIALOG_DIR, "nfd_win.c" ) }
+
+
+		--
+		-- apply defines
+		-- 
+		filter { "configurations:Debug*" }
+			defines { allDefinesProject, "DEBUG", "TRACE" }
+		filter { "configurations:Release*" }
+			defines { allDefinesProject, "NDEBUG" }
 
 		-- 
 		-- disable filters, so this is valid for all projects
