@@ -2,6 +2,9 @@
 
 Tiny framework meant to be included directly "alongside" your application. 
 
+Sample Application Screenshot (Direct Volume Rendering)
+![](DVR_sample.png)
+
 # Quick Start
 
 In your new application, run

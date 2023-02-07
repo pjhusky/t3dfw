@@ -49,6 +49,7 @@ data_cva_berlin/*
 **data-alabastron-*/
 **tron-*/
 **.png
+!DVR_sample.png
 **.tif*
 **.bin
 **.jpg
