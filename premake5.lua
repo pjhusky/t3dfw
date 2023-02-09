@@ -26,13 +26,13 @@
 --
 
 	function incorporateGlfw (GFX_API_DIR)
-		filter { "platforms:macosx" }
+		filter { "platforms:macosx", "action:xcode*" }
 			linkoptions "-v -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit"
 			local GLFW_BASE_DIR = path.normalize( path.join( GFX_API_DIR, "glfw-3.3.8.macosx.WIN64" ) )
 			local GLFW_LIB_DIR = path.normalize( path.join( GLFW_BASE_DIR, "lib" ) )
 			libdirs { GLFW_LIB_DIR }
 
-		filter {"platforms:macosx", "gmake"}
+		filter {"platforms:macosx", "action:gmake*"}
 			buildoptions {"-F /Library/Frameworks"}
 			linkoptions {"-F /Library/Frameworks"}
 			local GLFW_BASE_DIR = path.normalize( path.join( GFX_API_DIR, "glfw-3.3.8.macosx.WIN64" ) )
