@@ -83,7 +83,7 @@
 	project "T3DFW_LIB_Project"
 
 		local allDefinesProject = { "_USE_MATH_DEFINES" }
-		if _ACTION == "gamke2" then
+		if _ACTION == "gmake2" then
 			table.insert( allDefinesProject, "UNIX" )
 		elseif string.match( _ACTION, 'vs*') then
 			table.insert( allDefinesProject, "_WIN32" )
