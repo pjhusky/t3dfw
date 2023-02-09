@@ -25,38 +25,32 @@
 -- workspace is roughly a VS solution; contains projects
 --
 
-	function incorporateGlfw (GFX_API_DIR)
+	function incorporateGlfw (gfxApiDir)
 		filter { "platforms:macosx", "action:xcode*" }
 			linkoptions "-v -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit"
-			local GLFW_BASE_DIR = path.normalize( path.join( GFX_API_DIR, "glfw-3.3.8.macosx.WIN64" ) )
+			local GLFW_BASE_DIR = path.normalize( path.join( gfxApiDir, "glfw-3.3.8.macosx.WIN64" ) )
 			local GLFW_LIB_DIR = path.normalize( path.join( GLFW_BASE_DIR, "lib" ) )
 			libdirs { GLFW_LIB_DIR }
 
 		filter {"platforms:macosx", "action:gmake*"}
 			buildoptions {"-F /Library/Frameworks"}
 			linkoptions {"-F /Library/Frameworks"}
-			local GLFW_BASE_DIR = path.normalize( path.join( GFX_API_DIR, "glfw-3.3.8.macosx.WIN64" ) )
+			local GLFW_BASE_DIR = path.normalize( path.join( gfxApiDir, "glfw-3.3.8.macosx.WIN64" ) )
 			local GLFW_LIB_DIR = path.normalize( path.join( GLFW_BASE_DIR, "lib" ) )
 			libdirs { GLFW_LIB_DIR }
 			
 		filter { "platforms:Win*", "action:vs*" }
-			local GLFW_BASE_DIR = path.normalize( path.join( GFX_API_DIR, "glfw-3.3.8.bin.WIN64" ) )
+			local GLFW_BASE_DIR = path.normalize( path.join( gfxApiDir, "glfw-3.3.8.bin.WIN64" ) )
 			local GLFW_LIB_DIR = path.normalize( path.join( GLFW_BASE_DIR, "lib-vc2022" ) )
 			libdirs { GLFW_LIB_DIR }
 			links { "glfw3" }
 			
 		filter { "platforms:Win*", "action:gmake*", "toolset:gcc" }
-			local GLFW_BASE_DIR = path.normalize( path.join( GFX_API_DIR, "glfw-3.3.8.bin.WIN64" ) )
+			local GLFW_BASE_DIR = path.normalize( path.join( gfxApiDir, "glfw-3.3.8.bin.WIN64" ) )
 			local GLFW_LIB_DIR = path.normalize( path.join( GLFW_BASE_DIR, "lib-mingw-w64" ) )
 			libdirs { GLFW_LIB_DIR }
 			--links { "glfw3" }
-			
 			--buildoptions { "-fpermissive" }
-
-			
-		filter "configurations:Debug*"
-			symbols "On"
-			targetsuffix "_d"
 
 		filter {}
 
@@ -122,7 +116,11 @@
 			-- VS also links these two libs, but they seem to be unnecessary... "odbc32.lib" "odbccp32.lib" 
 			--undefines { "__STRICT_ANSI__" } -- for simdb wvsprintfA() - https://stackoverflow.com/questions/3445312/swprintf-and-vswprintf-not-declared
 			--cppdialect "gnu++20" -- https://github.com/assimp/assimp/issues/4190, https://premake.github.io/docs/cppdialect/
-				
+
+		filter "configurations:Debug*"
+			symbols "On"
+			targetsuffix "_d"
+			
 		filter {}
 
 		includedirs { 
