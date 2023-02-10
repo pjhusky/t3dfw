@@ -10,3 +10,8 @@
 [submodule "src/arcBall"]
 	path = src/arcBall
 	url = https://github.com/pjhusky/arcball-3d-navigation.git
+[submodule "external/tiny-process-library"]
+	path = external/tiny-process-library
+	url = https://gitlab.com/eidheim/tiny-process-library.git
+	branch = master
+
