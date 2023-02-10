@@ -70,6 +70,7 @@
 	local STL_READER_DIR = path.normalize( path.join( T3DFW_EXTERNAL_DIR, "stl_reader" ) )
 	
 	local NATIVEFILEDIALOG_DIR = path.normalize( path.join( T3DFW_EXTERNAL_DIR, "nativefiledialog" ) )
+	local TINYPROCESS_DIR = path.normalize( path.join( T3DFW_EXTERNAL_DIR, "tiny-process-library" ) )
 	
 	local IMGUI_DIR = path.normalize( path.join( T3DFW_EXTERNAL_DIR, "imgui" ) )
 	
@@ -133,6 +134,7 @@
 			STB_BASE_DIR, 
 			STL_READER_DIR, 
 			path.normalize( path.join( NATIVEFILEDIALOG_DIR, "include" ) ),
+			TINYPROCESS_DIR,
 			IMGUI_DIR,
 		}	
 		
@@ -155,9 +157,14 @@
 			"**.bat", 
 			"**.glsl",
 		}
-		
+		--removefiles { "externals/tiny-process-library/tests/**" }
+		excludes { path.join( TINYPROCESS_DIR, "tests/**" ) }
+		removefiles{ path.join( TINYPROCESS_DIR, "tests/**" ) }
+
 		filter { "platforms:Win*" }
 			excludes { path.join( NATIVEFILEDIALOG_DIR, "nfd_gtk.c" ), path.join( NATIVEFILEDIALOG_DIR, "nfd_zenity.c" ) }
+			removefiles { path.join( TINYPROCESS_DIR, "process_unix.cpp" ), path.join( TINYPROCESS_DIR, "examples.cpp" ) }
+			--defines { "_WIN32", "WIN32", "_WIN64", "_AMD64_", "_WINDOWS" }
 
 		-- configuration "macosx"
 		filter { "platforms:macosx" }
@@ -177,6 +184,15 @@
 		-- 
 		filter {} 
 
+
+	-- externalproject "TinyProcessProject"
+	-- 	location "external/tiny-process-library/tiny-process-library.vcxproj"
+	-- 	uuid "9CDC89A2-DEF3-4CAC-83DF-BED879282BC5"
+	-- 	kind "StaticLib"
+	-- 	language "C++"
+	-- 	buildcommands { "echo mkdir", "echo external/tiny-process-library/" }
+	-- 	buildinputs { "external/tiny-process-library//CMakeLists.txt" }
+	-- 	buildoutputs { "" }
 
 -- NOTE: this way we could trigger cleanup code as well:
 -- if _ACTION == 'clean' then
