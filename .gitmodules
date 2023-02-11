@@ -1,15 +1,19 @@
 [submodule "src/math"]
 	path = src/math
 	url = https://github.com/pjhusky/linAlg.git
+	branch = main
 [submodule "src/fileLoaders"]
 	path = src/fileLoaders
 	url = https://github.com/pjhusky/Asset-IO.git
+	branch = main
 [submodule "src/gfxAPI"]
 	path = src/gfxAPI
 	url = https://github.com/pjhusky/ogl-core-glfw-utils.git
+	branch = main
 [submodule "src/arcBall"]
 	path = src/arcBall
 	url = https://github.com/pjhusky/arcball-3d-navigation.git
+	branch = main
 [submodule "external/tiny-process-library"]
 	path = external/tiny-process-library
 	url = https://gitlab.com/eidheim/tiny-process-library.git
