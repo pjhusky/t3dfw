@@ -73,11 +73,12 @@
 	local TINYPROCESS_DIR = path.normalize( path.join( T3DFW_EXTERNAL_DIR, "tiny-process-library" ) )
 	
 	local IMGUI_DIR = path.normalize( path.join( T3DFW_EXTERNAL_DIR, "imgui" ) )
+	local IMGUIZMO_QUAT_DIR = path.normalize( path.join( T3DFW_EXTERNAL_DIR, "imGuIZMO.quat" ) )
 	
 	-- main project	
 	project "T3DFW_LIB_Project"
 
-		local allDefinesProject = { "_USE_MATH_DEFINES" }
+		local allDefinesProject = { "_USE_MATH_DEFINES", "IMGUIZMO_IMGUI_FOLDER="..IMGUI_DIR.."/" }
 		if _ACTION == "gmake2" then
 			table.insert( allDefinesProject, "UNIX" )
 		elseif string.match( _ACTION, 'vs*') then
@@ -136,6 +137,7 @@
 			path.normalize( path.join( NATIVEFILEDIALOG_DIR, "include" ) ),
 			TINYPROCESS_DIR,
 			IMGUI_DIR,
+			IMGUIZMO_QUAT_DIR,
 		}	
 		
 		shaderincludedirs { "src/shaders" }  
@@ -158,8 +160,8 @@
 			"**.glsl",
 		}
 		--removefiles { "externals/tiny-process-library/tests/**" }
-		excludes { path.join( TINYPROCESS_DIR, "tests/**" ) }
-		removefiles{ path.join( TINYPROCESS_DIR, "tests/**" ) }
+		excludes { path.join( TINYPROCESS_DIR, "tests/**" ), path.join( IMGUIZMO_QUAT_DIR, "example/**" ) }
+		removefiles{ path.join( TINYPROCESS_DIR, "tests/**" ), path.join( IMGUIZMO_QUAT_DIR, "example/**" ) }
 
 		filter { "platforms:Win*" }
 			excludes { path.join( NATIVEFILEDIALOG_DIR, "nfd_gtk.c" ), path.join( NATIVEFILEDIALOG_DIR, "nfd_zenity.c" ) }

@@ -19,3 +19,6 @@
 	url = https://gitlab.com/eidheim/tiny-process-library.git
 	branch = master
 
+[submodule "external/imGuIZMO.quat"]
+	path = external/imGuIZMO.quat
+	url = git@github.com:BrutPitt/imGuIZMO.quat.git
