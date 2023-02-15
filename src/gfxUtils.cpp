@@ -61,6 +61,45 @@ Status_t gfxUtils::createShader( GfxAPI::Shader& shaderProgram, const std::vecto
     return shaderProgram.build();
 }
 
+gfxUtils::bufferHandles_t gfxUtils::createScreenTriGfxBuffers() { // screen quad
+
+    // this can be calculated in the shader anyway
+    float vertices[] = {
+        -1.0f, +1.0f, 0.0f,  // top left
+        -1.0f, -3.0f, 0.0f,  // bottom left
+        +3.0f, -1.0f, 0.0f,  // top right
+    };
+
+    uint32_t screenVAO;
+    glGenVertexArrays( 1, &screenVAO ); 
+    uint32_t VBO;
+    glGenBuffers( 1, &VBO );
+
+    // 1. bind Vertex Array Object
+    glBindVertexArray( screenVAO );
+
+    // 0. copy our vertices array in a buffer for OpenGL to use
+    glBindBuffer( GL_ARRAY_BUFFER, VBO );
+    glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
+    // 1. then set the vertex attributes pointers
+    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof( float ), reinterpret_cast< void* >( 0 ) );
+
+    glEnableVertexAttribArray(0);
+
+    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+    glBindVertexArray(0); 
+
+    return bufferHandles_t{
+        .vaoHandle = screenVAO,
+        .vboHandles = std::vector< uint32_t >{ VBO },
+        .eboHandle = static_cast<uint32_t>(-1),
+    };
+}
+
 gfxUtils::bufferHandles_t gfxUtils::createScreenQuadGfxBuffers() { // screen quad
 
     float vertices[] = {

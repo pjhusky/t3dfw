@@ -28,6 +28,7 @@ struct gfxUtils {
 
     static Status_t createShader( GfxAPI::Shader& shaderProgram, const std::vector< std::pair< path_t, GfxAPI::Shader::eShaderStage > >& shaderBuildInfo );
 
+    static bufferHandles_t createScreenTriGfxBuffers();
     static bufferHandles_t createScreenQuadGfxBuffers();
 
     static constexpr size_t numPosCoords = 3;
