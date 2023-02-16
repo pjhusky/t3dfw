@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#include <algorithm>
+//#include <algorithm>
 #include <string>
 #include <filesystem>
 #include <regex>
@@ -19,8 +19,12 @@ namespace fileUtils {
     }
 
     static bool writeFile( const std::string &filePath, const std::string& data ) { 
-        std::ofstream ofile{ filePath.c_str() };
-        std::copy( data.begin(), data.end(), std::ostreambuf_iterator< char >( ofile ) );
+        //std::ofstream ofile{ filePath };
+        //std::copy( data.begin(), data.end(), std::ostreambuf_iterator< char >( ofile ) );
+
+        std::ofstream ofile{ filePath };
+        ofile << data;
+        ofile.close();
         return true;
     }
 
