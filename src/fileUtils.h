@@ -2,6 +2,8 @@
 #define _FILE_UTILS_H_F654FF32_7032_4271_B21A_D6322D0722E3
 
 #include <stdio.h>
+
+#include <algorithm>
 #include <string>
 #include <filesystem>
 #include <regex>
@@ -16,6 +18,11 @@ namespace fileUtils {
             std::istreambuf_iterator< char >() );
     }
 
+    static bool writeFile( const std::string &filePath, const std::string& data ) { 
+        std::ofstream ofile{ filePath.c_str() };
+        std::copy( data.begin(), data.end(), std::ostreambuf_iterator< char >( ofile ) );
+        return true;
+    }
 
 	static void lukeFileWalker( const uint32_t level, 
 								const std::filesystem::path& path, 
