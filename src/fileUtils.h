@@ -6,8 +6,17 @@
 #include <filesystem>
 #include <regex>
 
+#include <fstream>
+
 namespace fileUtils {
     
+    static std::string readFile( const std::string &filePath ) { 
+        std::ifstream ifile{ filePath.c_str() };
+        return std::string( std::istreambuf_iterator< char >( ifile ), 
+            std::istreambuf_iterator< char >() );
+    }
+
+
 	static void lukeFileWalker( const uint32_t level, 
 								const std::filesystem::path& path, 
 								std::vector<std::string>& filenames, 
