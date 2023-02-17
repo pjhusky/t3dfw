@@ -13,19 +13,19 @@
 namespace fileUtils {
     
     static std::string readFile( const std::string &filePath ) { 
-        std::ifstream ifile{ filePath.c_str() };
+        std::ifstream ifile{ filePath };
         return std::string( std::istreambuf_iterator< char >( ifile ), 
-            std::istreambuf_iterator< char >() );
+                            std::istreambuf_iterator< char >() );
     }
 
-    static bool writeFile( const std::string &filePath, const std::string& data ) { 
+    static void writeFile( const std::string &filePath, const std::string& data ) { 
         //std::ofstream ofile{ filePath };
         //std::copy( data.begin(), data.end(), std::ostreambuf_iterator< char >( ofile ) );
 
+        //std::ofstream ofile{ std::filesystem::absolute( std::filesystem::path( filePath ) ).string() };
         std::ofstream ofile{ filePath };
         ofile << data;
         ofile.close();
-        return true;
     }
 
 	static void lukeFileWalker( const uint32_t level, 
