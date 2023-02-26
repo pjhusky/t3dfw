@@ -40,7 +40,16 @@ namespace {
     }
 }
 
-Status_t gfxUtils::createShader( GfxAPI::Shader& shaderProgram, const std::vector< std::pair< path_t, GfxAPI::Shader::eShaderStage > >& shaderBuildInfo ) {
+Status_t gfxUtils::createShader( GfxAPI::Shader& shaderProgram, const std::vector< std::pair< gfxUtils::srcStr_t, GfxAPI::Shader::eShaderStage > >& shaderBuildInfo ) {
+    for (const auto& buildInfo : shaderBuildInfo) {
+        const auto& shaderStageString = buildInfo.first;
+        const auto& shaderStage = buildInfo.second;
+        shaderProgram.addShaderStage( shaderStage, shaderStageString );
+    }
+    return shaderProgram.build();
+}
+
+Status_t gfxUtils::createShader( GfxAPI::Shader& shaderProgram, const std::vector< std::pair< gfxUtils::path_t, GfxAPI::Shader::eShaderStage > >& shaderBuildInfo ) {
     
     for ( const auto& buildInfo : shaderBuildInfo ) {
         const auto& filePath = buildInfo.first;
@@ -51,7 +60,7 @@ Status_t gfxUtils::createShader( GfxAPI::Shader& shaderProgram, const std::vecto
     #if defined( VERBOSE_GFX_DEBUG )
         printf( "now reading file %s\n", filePath.c_str() );
     #endif
-        fileReadResult = loadFile( filePath, shaderStageString );
+        fileReadResult = loadFile( filePath.string(), shaderStageString );
         //printf( "--------------\n%s\n--------------\n", shaderStageString.c_str() );
         assert( fileReadResult == Status_t::OK() );
 
@@ -149,12 +158,12 @@ gfxUtils::bufferHandles_t gfxUtils::createScreenQuadGfxBuffers() { // screen qua
 }
 
 gfxUtils::bufferHandles_t gfxUtils::createMeshGfxBuffers(
-    const size_t& numVertexCoordVec3s,
-    const std::vector< float >& vertexCoordFloats,
-    const size_t& numNormalVec3s,
-    const std::vector< float >& normalFloats,
-    const size_t& numIndices,
-    const std::vector< uint32_t >& indices ) {
+    const uint32_t numVertexCoordVec3s,
+    const float* const pVertexCoordFloats,
+    const uint32_t numNormalVec3s,
+    const float* const pNormalFloats,
+    const uint32_t numIndices,
+    const uint32_t* const pIndices ) {
 
     uint32_t stlModel_VAO;
     glGenVertexArrays(1, &stlModel_VAO);
@@ -169,18 +178,18 @@ gfxUtils::bufferHandles_t gfxUtils::createMeshGfxBuffers(
     glGenBuffers(1, &stlModel_EBO);
 
     glBindVertexArray(stlModel_VAO);
-    
+
     glBindBuffer(GL_ARRAY_BUFFER, stlCoords_VBO);
     const size_t numBytes = numVertexCoordVec3s * 3 * sizeof(float);
-    glBufferData(GL_ARRAY_BUFFER, numBytes, vertexCoordFloats.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, numBytes, pVertexCoordFloats, GL_STATIC_DRAW);
     const uint32_t attribIdx = 0;
     const int32_t components = 3;
     glVertexAttribPointer(attribIdx, components, GL_FLOAT, GL_FALSE, 0, 0); // the last two zeros mean "tightly packed"
     glEnableVertexAttribArray(attribIdx);
-    
+
     glBindBuffer(GL_ARRAY_BUFFER, stlNormals_VBO);
     const size_t numNormalBytes = numNormalVec3s * 3 * sizeof(float);
-    glBufferData(GL_ARRAY_BUFFER, numNormalBytes, normalFloats.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, numNormalBytes, pNormalFloats, GL_STATIC_DRAW);
     const uint32_t normalAttribIdx = 1;
     glVertexAttribPointer(normalAttribIdx, components, GL_FLOAT, GL_FALSE, 0, 0); // the last two zeros mean "tightly packed"
     glEnableVertexAttribArray(normalAttribIdx);
@@ -189,7 +198,7 @@ gfxUtils::bufferHandles_t gfxUtils::createMeshGfxBuffers(
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, stlModel_EBO);
     {
         const size_t numBytes = numIndices * sizeof( uint32_t );
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, numBytes, indices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, numBytes, pIndices, GL_STATIC_DRAW);
     }
 
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
@@ -204,7 +213,23 @@ gfxUtils::bufferHandles_t gfxUtils::createMeshGfxBuffers(
         .vboHandles = std::vector< uint32_t >{ stlCoords_VBO, stlNormals_VBO },
         .eboHandle = stlModel_EBO,
     };
+}
 
+gfxUtils::bufferHandles_t gfxUtils::createMeshGfxBuffers(
+    const uint32_t numVertexCoordVec3s,
+    const std::vector< float >& vertexCoordFloats,
+    const uint32_t numNormalVec3s,
+    const std::vector< float >& normalFloats,
+    const uint32_t numIndices,
+    const std::vector< uint32_t >& indices ) {
+
+    return createMeshGfxBuffers(
+        numVertexCoordVec3s,
+        vertexCoordFloats.data(),
+        numNormalVec3s,
+        normalFloats.data(),
+        numIndices,
+        indices.data() );
 }
 
 void gfxUtils::freeMeshGfxBuffers( gfxUtils::bufferHandles_t& bufferHandles ) {

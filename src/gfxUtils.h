@@ -5,6 +5,7 @@
 #include "math/linAlg.h"
 #include "gfxAPI/shader.h"
 
+#include <filesystem>
 #include <stdint.h>
 #include <stddef.h>
 #include <array>
@@ -24,8 +25,10 @@ struct gfxUtils {
         uint32_t eboHandle;
     };
 
-    using path_t = std::string;
+    using path_t = std::filesystem::path;
+    using srcStr_t = std::string;
 
+    static Status_t createShader( GfxAPI::Shader& shaderProgram, const std::vector< std::pair< srcStr_t, GfxAPI::Shader::eShaderStage > >& shaderBuildInfo );
     static Status_t createShader( GfxAPI::Shader& shaderProgram, const std::vector< std::pair< path_t, GfxAPI::Shader::eShaderStage > >& shaderBuildInfo );
 
     static bufferHandles_t createScreenTriGfxBuffers();
@@ -47,13 +50,21 @@ struct gfxUtils {
         linAlg::mat4_t& modelViewMatrix );
 
     static bufferHandles_t createMeshGfxBuffers(
-        const size_t& numVertexCoordVec3s,
+        const uint32_t numVertexCoordVec3s,
+        const float *const pVertexCoordFloats, 
+        const uint32_t numNormalVec3s,
+        const float *const pNormalFloats,
+        const uint32_t numIndices,
+        const uint32_t *const pIndices );
+
+    static bufferHandles_t createMeshGfxBuffers(
+        const uint32_t numVertexCoordVec3s,
         const std::vector< float >& vertexCoordFloats, 
-        const size_t& numNormalVec3s,
+        const uint32_t numNormalVec3s,
         const std::vector< float >& normalFloats,
-        const size_t& numIndices,
+        const uint32_t numIndices,
         const std::vector< uint32_t >& indices );
-    
+
     static void freeMeshGfxBuffers( bufferHandles_t& bufferHandles );
 
     static Status_t loadImageIntoArray( const std::string& imgFilePath, 
