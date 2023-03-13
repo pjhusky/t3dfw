@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include <glad/glad.h>
+#include "gfxAPI/checkErrorGL.h"
 
 #include <thread>
 #include <chrono>
@@ -462,4 +463,72 @@ void gfxUtils::limitFrameRate( double deltaFrame_s, const float maxFrameRate /*=
         std::this_thread::sleep_for
         ( std::chrono::milliseconds( sleep_time_ms ) );
     }
+}
+
+void gfxUtils::screenToWorld(   linAlg::vec3_t& posWS, 
+                                const float currMouseX, 
+                                const float currMouseY, 
+                                const linAlg::mat3x4_t& viewMat, 
+                                const linAlg::mat4_t& projMat4, 
+                                const int32_t& fbWidth, 
+                                const int32_t& fbHeight ) {
+
+    glFlush();
+    glFinish();
+
+    glCheckError();
+#if (VERBOSE_DEBUG != 0)
+    printf( "\n" );
+#endif
+
+    glBindFramebuffer( GL_READ_FRAMEBUFFER, 0 );
+    if (glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE) {
+    #if (VERBOSE_DEBUG != 0)
+        printf( "framebuffer not complete!\n" );
+    #endif
+    }
+    glReadBuffer( GL_BACK );
+
+    const GLint glReadX = static_cast<GLint>(currMouseX); 
+    const GLint glReadY = (fbHeight - 1) - static_cast<GLint>(currMouseY); // flip y for reading from framebuffer
+
+    const float fReadWindowRelativeX = ( currMouseX / static_cast<float>( fbWidth - 1 ) );
+    const float fReadWindowRelativeY = ( currMouseY / static_cast<float>( fbHeight - 1 ) );
+
+    float depthAtMousePos = 0.0f;
+    glReadPixels( glReadX, glReadY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depthAtMousePos );
+
+#if (VERBOSE_DEBUG != 0)
+    printf( "mouse read depth = %f at (%f, %f) for window size (%d, %d)\n", depthAtMousePos, currMouseX, currMouseY, fbWidth, fbHeight );
+#endif
+
+    linAlg::vec4_t mousePosNDC{ fReadWindowRelativeX * 2.0f - 1.0f, ( 1.0f - fReadWindowRelativeY ) * 2.0f - 1.0f, depthAtMousePos * 2.0f - 1.0f, 1.0f };
+    //printVec( "mousePosNDC", mousePosNDC );
+
+    linAlg::mat4_t viewMat4;
+    linAlg::castMatrix( viewMat4, viewMat );
+
+    linAlg::mat4_t viewProjMat4; 
+    linAlg::multMatrix( viewProjMat4, projMat4, viewMat4 );
+
+    linAlg::mat4_t invViewProjMat4; 
+    linAlg::inverse( invViewProjMat4, viewProjMat4 );
+
+    linAlg::vec4_t mousePosWS = invViewProjMat4 * mousePosNDC;
+
+
+    mousePosWS[3] = linAlg::maximum( mousePosWS[3], std::numeric_limits<float>::epsilon() );
+    mousePosWS[0] /= mousePosWS[3];
+    mousePosWS[1] /= mousePosWS[3];
+    mousePosWS[2] /= mousePosWS[3];
+
+
+    posWS = { mousePosWS[0], mousePosWS[1], mousePosWS[2] };
+    linAlg::printVec( "picked WS pos", posWS );
+
+    glCheckError();
+#if (VERBOSE_DEBUG != 0)
+    printf( "\n" );
+#endif
+
 }

@@ -81,6 +81,13 @@ struct gfxUtils {
     static int32_t glCheckError_( const char *file, const int line );
 
     static void limitFrameRate( double deltaFrame_s, const float maxFrameRate = 60.0f );
+
+    static void screenToWorld(
+        linAlg::vec3_t& posWS,
+        const float currMouseX, const float currMouseY,
+        const linAlg::mat3x4_t& viewMat,
+        const linAlg::mat4_t& projMat4,
+        const int32_t& fbWidth, const int32_t& fbHeight );
 };
 
 #endif // _GFXUTILS_H_9ec4f00a_2117_4578_937e_9f4fb94dc759
