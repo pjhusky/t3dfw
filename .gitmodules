@@ -25,3 +25,6 @@
 [submodule "src/freeFlyCamera"]
 	path = src/freeFlyCamera
 	url = git@github.com:pjhusky/freefly-cam.git
+[submodule "src/orbitCamera"]
+	path = src/orbitCamera
+	url = git@github.com:pjhusky/orbit-camera.git
