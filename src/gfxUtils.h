@@ -65,6 +65,15 @@ struct gfxUtils {
         const uint32_t numIndices,
         const std::vector< uint32_t >& indices );
 
+    static bufferHandles_t createCylinderMeshGfxBuffer(
+        const linAlg::vec3_t& startPos,
+        const linAlg::vec3_t& axis,
+        const float btmRadius,
+        const float topRadius,
+        const float lenAlongAxis,
+        const uint32_t circleSegments,
+        uint32_t& outNumIndices );
+
     static void freeMeshGfxBuffers( bufferHandles_t& bufferHandles );
 
     static Status_t loadImageIntoArray( const std::string& imgFilePath, 
@@ -88,6 +97,7 @@ struct gfxUtils {
         const linAlg::mat3x4_t& viewMat,
         const linAlg::mat4_t& projMat4,
         const int32_t& fbWidth, const int32_t& fbHeight );
+
 };
 
 #endif // _GFXUTILS_H_9ec4f00a_2117_4578_937e_9f4fb94dc759

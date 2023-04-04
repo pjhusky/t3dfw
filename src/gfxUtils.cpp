@@ -233,6 +233,164 @@ gfxUtils::bufferHandles_t gfxUtils::createMeshGfxBuffers(
         indices.data() );
 }
 
+gfxUtils::bufferHandles_t gfxUtils::createCylinderMeshGfxBuffer(    const linAlg::vec3_t& startPos, 
+                                                                    const linAlg::vec3_t& axis, 
+                                                                    const float btmRadius, 
+                                                                    const float topRadius, 
+                                                                    const float lenAlongAxis, 
+                                                                    const uint32_t circleSegments,
+                                                                    uint32_t& outNumIndices ) {
+    
+    uint32_t cylinder_VAO;
+    glGenVertexArrays(1, &cylinder_VAO);
+
+    uint32_t cylinderCoords_VBO;
+    glGenBuffers(1, &cylinderCoords_VBO);
+
+    uint32_t cylinderNormals_VBO;
+    glGenBuffers(1, &cylinderNormals_VBO);
+
+    uint32_t cylinder_EBO;
+    glGenBuffers(1, &cylinder_EBO);
+
+    glBindVertexArray(cylinder_VAO);
+
+    std::vector< linAlg::vec3_t > cylinderVerts;
+    cylinderVerts.reserve( ( circleSegments + 1 ) * 2 * 3 * 4 ); // TODO: calculate exactly, but i'm too tired already
+    
+
+    // bottom and top circles lie in planes that the axis is perpendicular to
+    const linAlg::vec3_t absAxis = { fabsf( axis[0] ), fabsf( axis[1] ), fabsf( axis[2] ) };
+    linAlg::vec3_t tmpAxis = { 1.0f, 0.0f, 0.0f };
+    if ( absAxis[0] > absAxis[1] ) {
+        if (absAxis[0] > absAxis[2]) {
+            // absAxis[0] has largest magnitude
+            tmpAxis = { 0.0f, 1.0f, 1.0f };
+        }
+        else {
+            // absAxis[2] has largest magnitude
+            tmpAxis = { 1.0f, 0.0f, 0.0f };
+        }
+    }
+    else {
+        if (absAxis[1] > absAxis[2]) {
+            // absAxis[1] has largest magnitude
+            tmpAxis = { 0.0f, 0.0f, 1.0f };
+        }
+        else {
+            // absAxis[2] has largest magnitude
+            tmpAxis = { 1.0f, 0.0f, 0.0f };
+        }
+    }
+
+    linAlg::vec3_t axisNormal;
+    linAlg::cross( axisNormal, tmpAxis, axis );
+    linAlg::normalize( axisNormal );
+
+    linAlg::vec3_t axisNormal2;
+    linAlg::cross( axisNormal2, axisNormal, axis );
+    linAlg::normalize( axisNormal2 );
+
+    std::vector<uint32_t> indicesCylinder;
+
+    // bottom and top circles span the cylinder's revolution surface
+
+    const float angleInc = 2.0f * M_PI / static_cast<float>( circleSegments );
+    const auto btmCircleCenterPos = startPos;
+    const auto topCircleCenterPos = btmCircleCenterPos + axis * lenAlongAxis;
+
+    cylinderVerts.push_back( btmCircleCenterPos );
+
+    // draw as indexed triangles 
+
+    for (uint32_t i = 0; i <= circleSegments; i++) {
+        const float angRad = i * angleInc;
+        const float cosAng = cosf( angRad ) * btmRadius;
+        const float sinAng = sinf( angRad ) * btmRadius;
+
+        const auto btmCirclePos = btmCircleCenterPos + cosAng * axisNormal + sinAng * axisNormal2;
+
+        cylinderVerts.push_back( btmCirclePos );
+        
+        indicesCylinder.push_back( 0 );
+        indicesCylinder.push_back( i + 1 );
+        indicesCylinder.push_back( ( i + 1 ) % circleSegments + 1 );
+    }
+
+    const uint32_t topStartIdx = cylinderVerts.size();
+    cylinderVerts.push_back( topCircleCenterPos );
+
+    for (uint32_t i = 0; i <= circleSegments; i++) {
+        const float angRad = i * angleInc;
+        const float cosAng = cosf( angRad ) * btmRadius;
+        const float sinAng = sinf( angRad ) * btmRadius;
+
+        const auto topCirclePos = topCircleCenterPos + cosAng * axisNormal + sinAng * axisNormal2;
+
+        cylinderVerts.push_back( topCirclePos );
+
+        indicesCylinder.push_back( topStartIdx + 0 );
+        indicesCylinder.push_back( topStartIdx + i + 1 );
+        indicesCylinder.push_back( topStartIdx + ( i + 1 ) % circleSegments + 1 );
+    }
+
+    for (uint32_t i = 0; i <= circleSegments; i++) {
+        indicesCylinder.push_back( i + 1 );
+        indicesCylinder.push_back( topStartIdx + ( i + 1 ) % circleSegments + 1 );
+        indicesCylinder.push_back( topStartIdx + i + 1 );
+
+        indicesCylinder.push_back( i + 1 );
+        indicesCylinder.push_back( ( i + 1 ) % circleSegments + 1 );
+        indicesCylinder.push_back( topStartIdx + ( i + 1 ) % circleSegments + 1 );
+    }
+
+
+    const uint32_t numVertexCoordVec3s  = static_cast<uint32_t>( cylinderVerts.size() );
+    const uint32_t numNormalVec3s       = numVertexCoordVec3s;
+
+    const float* const pVertexCoordFloats = reinterpret_cast<const float* const>( cylinderVerts.data() );
+    const float* const pNormalFloats = pVertexCoordFloats;
+
+    const uint32_t* const pIndices = reinterpret_cast<const uint32_t* const>( indicesCylinder.data() );
+    const uint32_t numIndices = static_cast<uint32_t>(indicesCylinder.size());
+
+    outNumIndices = numIndices;
+
+    glBindBuffer(GL_ARRAY_BUFFER, cylinderCoords_VBO);
+    const size_t numBytes = numVertexCoordVec3s * 3 * sizeof(float);
+    glBufferData(GL_ARRAY_BUFFER, numBytes, pVertexCoordFloats, GL_STATIC_DRAW);
+    const uint32_t attribIdx = 0;
+    const int32_t components = 3;
+    glVertexAttribPointer(attribIdx, components, GL_FLOAT, GL_FALSE, 0, 0); // the last two zeros mean "tightly packed"
+    glEnableVertexAttribArray(attribIdx);
+
+    glBindBuffer(GL_ARRAY_BUFFER, cylinderNormals_VBO);
+    const size_t numNormalBytes = numNormalVec3s * 3 * sizeof(float);
+    glBufferData(GL_ARRAY_BUFFER, numNormalBytes, pNormalFloats, GL_STATIC_DRAW);
+    const uint32_t normalAttribIdx = 1;
+    glVertexAttribPointer(normalAttribIdx, components, GL_FLOAT, GL_FALSE, 0, 0); // the last two zeros mean "tightly packed"
+    glEnableVertexAttribArray(normalAttribIdx);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cylinder_EBO);
+    {
+        const size_t numBytes = numIndices * sizeof( uint32_t );
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, numBytes, pIndices, GL_STATIC_DRAW);
+    }
+
+    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+    glBindVertexArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    return bufferHandles_t{
+        .vaoHandle = cylinder_VAO,
+        .vboHandles = std::vector< uint32_t >{ cylinderCoords_VBO, cylinderNormals_VBO },
+        .eboHandle = cylinder_EBO,
+    };
+}
+
 void gfxUtils::freeMeshGfxBuffers( gfxUtils::bufferHandles_t& bufferHandles ) {
     glDeleteVertexArrays(1, &bufferHandles.vaoHandle);
     glDeleteBuffers( static_cast<GLsizei>(bufferHandles.vboHandles.size()), bufferHandles.vboHandles.data() );
