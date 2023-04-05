@@ -1,4 +1,5 @@
 #include "gfxUtils.h"
+#include "linAlgPrint.h"
 #include "fileLoaders/plyModel.h"
 
 #include "fileLoaders/stb/stb_image.h"
@@ -682,7 +683,7 @@ void gfxUtils::screenToWorld(   linAlg::vec3_t& posWS,
 
 
     posWS = { mousePosWS[0], mousePosWS[1], mousePosWS[2] };
-    linAlg::printVec( "picked WS pos", posWS );
+    linAlgUtils::printVec( "picked WS pos", posWS );
 
     glCheckError();
 #if (VERBOSE_DEBUG != 0)
