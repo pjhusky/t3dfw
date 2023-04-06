@@ -21,10 +21,10 @@
 
 [submodule "external/imGuIZMO.quat"]
 	path = external/imGuIZMO.quat
-	url = git@github.com:BrutPitt/imGuIZMO.quat.git
+	url = https://github.com/BrutPitt/imGuIZMO.quat.git
 [submodule "src/freeFlyCamera"]
 	path = src/freeFlyCamera
-	url = git@github.com:pjhusky/freefly-cam.git
+	url = https://github.com/pjhusky/freefly-cam.git
 [submodule "src/orbitCamera"]
 	path = src/orbitCamera
-	url = git@github.com:pjhusky/orbit-camera.git
+	url = https://github.com/pjhusky/orbit-camera.git
