@@ -313,9 +313,9 @@ gfxUtils::bufferHandles_t gfxUtils::createCylinderMeshGfxBuffer(    const linAlg
 
         cylinderVerts.push_back( btmCirclePos );
         
-        indicesCylinder.push_back( 0 );
+        /*indicesCylinder.push_back(0);
         indicesCylinder.push_back( i + 1 );
-        indicesCylinder.push_back( ( i + 1 ) % circleSegments + 1 );
+        indicesCylinder.push_back( ( i + 1 ) % circleSegments + 1 );*/
     }
 
     const uint32_t topStartIdx = cylinderVerts.size();
@@ -330,9 +330,9 @@ gfxUtils::bufferHandles_t gfxUtils::createCylinderMeshGfxBuffer(    const linAlg
 
         cylinderVerts.push_back( topCirclePos );
 
-        indicesCylinder.push_back( topStartIdx + 0 );
+        /*indicesCylinder.push_back(topStartIdx + 0);
         indicesCylinder.push_back( topStartIdx + i + 1 );
-        indicesCylinder.push_back( topStartIdx + ( i + 1 ) % circleSegments + 1 );
+        indicesCylinder.push_back( topStartIdx + ( i + 1 ) % circleSegments + 1 );*/
     }
 
     for (uint32_t i = 0; i <= circleSegments; i++) {
