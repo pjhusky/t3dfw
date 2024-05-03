@@ -60,7 +60,7 @@ Status_t gfxUtils::createShader( GfxAPI::Shader& shaderProgram, const std::vecto
         Status_t fileReadResult = Status_t::OK();
         std::string shaderStageString = "";
     #if ( VERBOSE_GFX_DEBUG != 0 )
-        printf( "now reading file %s\n", filePath.c_str() );
+        printf( "now reading file %s\n", filePath.string().c_str() );
     #endif
         fileReadResult = loadFile( filePath.string(), shaderStageString );
         //printf( "--------------\n%s\n--------------\n", shaderStageString.c_str() );
