@@ -4,16 +4,14 @@
 
 #include "fileLoaders/stb/stb_image.h"
 
-#include <iostream>
-//#include <fstream>
-
-#include <string>
-
-#include <stdio.h>
-
 #include <glad/glad.h>
 #include "gfxAPI/checkErrorGL.h"
 
+#include <stdio.h>
+
+#include <iostream>
+#include <numbers>
+#include <string>
 #include <thread>
 #include <chrono>
 
@@ -296,7 +294,7 @@ gfxUtils::bufferHandles_t gfxUtils::createCylinderMeshGfxBuffer(    const linAlg
 
     // bottom and top circles span the cylinder's revolution surface
 
-    const float angleInc = 2.0f * M_PI / static_cast<float>( circleSegments );
+    const float angleInc = 2.0f * std::numbers::pi_v<float> / static_cast<float>( circleSegments );
     const auto btmCircleCenterPos = startPos;
     const auto topCircleCenterPos = btmCircleCenterPos + axis * lenAlongAxis;
 
@@ -318,7 +316,7 @@ gfxUtils::bufferHandles_t gfxUtils::createCylinderMeshGfxBuffer(    const linAlg
         indicesCylinder.push_back( ( i + 1 ) % circleSegments + 1 );*/
     }
 
-    const uint32_t topStartIdx = cylinderVerts.size();
+    const uint32_t topStartIdx = static_cast<uint32_t>( cylinderVerts.size() );
     cylinderVerts.push_back( topCircleCenterPos );
 
     for (uint32_t i = 0; i <= circleSegments; i++) {
