@@ -126,6 +126,7 @@
 		filter {}
 
 		includedirs { 
+			T3DFW_EXTERNAL_DIR,
 			_SCRIPT_DIR,
 			PRJ_LOCATION,
 			path.normalize( path.join( GLFW_BASE_DIR, "include" ) ),
@@ -137,7 +138,9 @@
 			path.normalize( path.join( NATIVEFILEDIALOG_DIR, "include" ) ),
 			TINYPROCESS_DIR,
 			IMGUI_DIR,
-			IMGUIZMO_QUAT_DIR,
+			IMGUIZMO_QUAT_DIR, 
+			path.normalize( path.join( IMGUIZMO_QUAT_DIR, "imguizmo_quat" ) ),
+			-- path.normalize( path.join( IMGUIZMO_QUAT_DIR, "libs" ) ),
 		}	
 		
 		shaderincludedirs { "src/shaders" }  
@@ -160,8 +163,15 @@
 			"**.glsl",
 		}
 		--removefiles { "externals/tiny-process-library/tests/**" }
-		excludes { path.join( TINYPROCESS_DIR, "tests/**" ), path.join( IMGUIZMO_QUAT_DIR, "example/**" ) }
-		removefiles{ path.join( TINYPROCESS_DIR, "tests/**" ), path.join( IMGUIZMO_QUAT_DIR, "example/**" ) }
+		excludes { path.join( TINYPROCESS_DIR, "tests/**" ), path.join( IMGUIZMO_QUAT_DIR, "example/**" ), path.join( IMGUIZMO_QUAT_DIR, "libs/imgui/examples/**" ), path.join( IMGUIZMO_QUAT_DIR, "old_examples/**" ), path.join( IMGUIZMO_QUAT_DIR, "examples/**" ), path.join( IMGUIZMO_QUAT_DIR, "basic_examples/**" ) }
+		-- excludes { path.join( IMGUIZMO_QUAT_DIR, "libs/glad/**" ) }
+		excludes { path.join( IMGUIZMO_QUAT_DIR, "libs/**" ) }
+		
+		removefiles { path.join( TINYPROCESS_DIR, "tests/**" ), path.join( IMGUIZMO_QUAT_DIR, "example/**" ), path.join( IMGUIZMO_QUAT_DIR, "libs/imgui/examples/**" ), path.join( IMGUIZMO_QUAT_DIR, "old_examples/**" ), path.join( IMGUIZMO_QUAT_DIR, "examples/**" ), path.join( IMGUIZMO_QUAT_DIR, "basic_examples/**" ) }
+		removefiles { path.join( IMGUIZMO_QUAT_DIR, "commons/utils/framework*" ), path.join( IMGUIZMO_QUAT_DIR, "commons/utils/dbg*" ), path.join( IMGUIZMO_QUAT_DIR, "commons/utils/sdl2wgpu*" ) }
+		-- removefiles { path.join( IMGUIZMO_QUAT_DIR, "libs/glad/**" ) }
+		removefiles { path.join( IMGUIZMO_QUAT_DIR, "libs/**" ) }
+		
 
 		filter { "platforms:Win*" }
 			excludes { path.join( NATIVEFILEDIALOG_DIR, "nfd_gtk.c" ), path.join( NATIVEFILEDIALOG_DIR, "nfd_zenity.c" ) }
